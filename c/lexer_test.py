@@ -38,3 +38,4 @@ int main() {
 """
         result = lex(simple_program)
         assert result == ["int", "main", "(", ")", "{", "return", "2", ";", "}"]
+        
