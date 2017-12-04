@@ -25,7 +25,7 @@ VALID_TOKENS = {
 def lex(program: str) -> List[str]:
     """Lexes the input program into a list of tokens."""
     tokens: List[str] = list()
-    while(len(program) > 0):
+    while len(program) > 0:
         hit = first_matching_regex(program)
         if hit is None:
             break
