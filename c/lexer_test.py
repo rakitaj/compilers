@@ -1,5 +1,6 @@
 from ccompiler import *
 import pytest
+from helpers import *
 
 class TestTokenValidity(object):
     
@@ -38,4 +39,12 @@ int main() {
 """
         result = lex(simple_program)
         assert result == ["int", "main", "(", ")", "{", "return", "2", ";", "}"]
-        
+
+    @pytest.mark.parametrize("name,source_location,tokens_location", [
+        ("simple01", "C:/Users/joshuar/src/compilers/c/programs/simple01.c", "C:/Users/joshuar/src/compilers/c/programs/simple01.tokens"),
+        ("simple01", "C:/Users/joshuar/src/compilers/c/programs/multi_digit.c", "C:/Users/joshuar/src/compilers/c/programs/multi_digit.tokens")
+    ])
+    def test_lexing(self, name, source_location, tokens_location):
+        program = ExampleProgramWithTokens(name, source_location, tokens_location)
+        actual_tokens = lex(program.source)
+        assert actual_tokens == program.tokens

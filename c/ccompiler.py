@@ -50,4 +50,6 @@ def first_matching_regex(string) -> Tuple[Token, int, int]:
         first_hit = sorted(all_hits, key=lambda tup: (tup[1], tup[2]))[0]
         return (Token(first_hit[0], VALID_TOKENS[first_hit[0]]), first_hit[1], first_hit[2])
     else:
+        # If there are no valid tokens left in the program return None to signal the caller
+        # there is nothing left.
         return None
