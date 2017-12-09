@@ -38,11 +38,21 @@ int main() {
 }
 """
         result = lex(simple_program)
-        assert result == ["int", "main", "(", ")", "{", "return", "2", ";", "}"]
+        #assert result == ["int", "main", "(", ")", "{", "return", "2", ";", "}"]
+        assert result == [
+            IntKeyword("int"),
+            Identifier("main"),
+            OpenParen("("),
+            CloseParen(")"),
+            OpenBrace("{"),
+            ReturnKeyword("return"),
+            IntegerLiteral("2"),
+            Semicolon(";"),
+            CloseBrace("}")]
 
     @pytest.mark.parametrize("name,source_location,tokens_location", [
-        ("simple01", "C:/Users/joshuar/src/compilers/c/programs/simple01.c", "C:/Users/joshuar/src/compilers/c/programs/simple01.tokens"),
-        ("simple01", "C:/Users/joshuar/src/compilers/c/programs/multi_digit.c", "C:/Users/joshuar/src/compilers/c/programs/multi_digit.tokens")
+        create_test_tuple("simple01"),
+        create_test_tuple("multi_digit")
     ])
     def test_lexing(self, name, source_location, tokens_location):
         program = ExampleProgramWithTokens(name, source_location, tokens_location)
