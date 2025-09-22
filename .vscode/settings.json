@@ -1,9 +1,16 @@
 {
     "files.exclude": {
         "**/.git": true,
-        "**/.cache": true,
-        "**/__pycache__": true,
+        "**/.venv": true,
         "**/.mypy_cache": true,
-        "**/venv": true
+        "**/.pytest_cache": true,
+        "**/__pycache__": true
     },
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.typeCheckingMode": "strict",
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
