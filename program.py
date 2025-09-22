@@ -1,11 +1,13 @@
 import argparse
 import os
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Self
-from dataclasses import dataclass
+
+from compiler import generate_assembly
 from lexer import Lexer
 from parser import Parser
-from compiler import generate_assembly
+
 
 @dataclass
 class ProgramArgs:
@@ -17,12 +19,13 @@ class ProgramArgs:
         filepath = Path(args.file)
         do_compile = bool(args.compile) or False
         return cls(filepath, do_compile)
-    
+
     def get_filename(self) -> str:
         return self.filepath.stem
-    
+
     def get_assembly_filename(self) -> str:
         return f"{parsed_args.get_filename()}.s"
+
 
 def compile_source_to_assembly(program_source: str) -> list[str]:
     lexer = Lexer(program_source)
@@ -31,6 +34,7 @@ def compile_source_to_assembly(program_source: str) -> list[str]:
     program_ast = parser.parse_program()
     assembly = generate_assembly(program_ast)
     return assembly
+
 
 arg_parser = argparse.ArgumentParser()
 
@@ -53,4 +57,3 @@ with open(output_file, "w") as file:
     for line in assembly:
         file.write(line)
         file.write(os.linesep)
-    

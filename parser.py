@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
+
 from tokens import Token, TokenType
 
 
@@ -101,6 +103,7 @@ class Parser:
         self.idx += 1
         return Expression(int(number_str))
 
+
 def pretty_print(node: Program | Function | Statement | Expression, indent: int = 0) -> None:
     padding = " " * indent
     if isinstance(node, Program):
@@ -115,5 +118,5 @@ def pretty_print(node: Program | Function | Statement | Expression, indent: int 
         print(f"{padding}Statement - {node.value}")
         # Hack! A statement can only have one expr right now.
         pretty_print(node.value, indent + 2)
-    else: # Always an expression by this point
+    else:  # Always an expression by this point
         print(f"{padding}Expr value - {node.value}")

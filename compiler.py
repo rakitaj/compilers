@@ -1,4 +1,5 @@
-from parser import Program, Function, Statement, Expression
+from parser import Expression, Function, Program, Statement
+
 
 def post_order(node: Program | Function | Statement | Expression, depth: int) -> list[str]:
     if isinstance(node, Program):
@@ -19,10 +20,10 @@ def post_order(node: Program | Function | Statement | Expression, depth: int) ->
         expr_asm.append("ret")
         return expr_asm
         # Hack! A statement can only have one expr right now.
-    else: # Always an expression by this point
+    else:  # Always an expression by this point
         return [f"movl ${node.value}, %eax"]
+
 
 def generate_assembly(program: Program) -> list[str]:
     assembly = post_order(program, 0)
     return assembly
-
