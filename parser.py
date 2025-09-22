@@ -15,10 +15,19 @@ class Statement:
     value: Expression
 
 
+@dataclass
+class Parameter:
+    type: Token
+    identifier: str
+
+
 class Function:
-    def __init__(self, name: str, statements: list[Statement] | None = None) -> None:
+    def __init__(
+        self, name: str, statements: list[Statement] | None = None, parameters: list[Parameter] | None = None
+    ) -> None:
         self.name = name
         self.statements: list[Statement] = statements or []
+        self.parameters: list[Parameter] = parameters or []
 
 
 class Program:
@@ -76,7 +85,14 @@ class Parser:
         while self.get().token_type != TokenType.EOF:
             if self.check_sequence(TokenType.KEYWORD_INT, TokenType.IDENTIFIER, TokenType.OPEN_PAREN):
                 name = self.get(1).lexeme
-                self.idx += 5
+                self.idx += 3
+                parameters: list[Parameter] = []
+                if self.check_sequence(TokenType.KEYWORD_VOID):
+                    param = Parameter(self.get(), "")
+                    parameters.append(param)
+                    self.idx += 1
+                self.idx += 2
+                # self.idx += 5
                 statements = self.parse_statements()
                 function = Function(name, statements)
                 if is_valid_function := self.expect(TokenType.CLOSE_BRACE):
