@@ -1,0 +1,48 @@
+import pytest
+
+from lexer import Lexer
+from parser import Parser, Program
+from compiler import generate_assembly
+
+
+@pytest.mark.parametrize(
+    "source_code",
+    [
+        # (1, "multi_digit"),
+        (1, "return_0"),
+        (1, "return_2"),
+        # (1, "newlines"),
+        # (1, "no_newlines"),
+        # (1, "spaces"),
+        # (1, "tabs"),
+    ],
+    indirect=True,
+)
+def test_parser_generate_ast(source_code: str):
+    lexer = Lexer(source_code)
+    actual_tokens = lexer.lex()
+    ast = Parser(actual_tokens)
+    program = ast.parse_program()
+    assert type(program) == Program
+
+@pytest.mark.parametrize(
+    "source_code",
+    [
+        # (1, "multi_digit"),
+        (1, "return_0"),
+        (1, "return_2"),
+        # (1, "newlines"),
+        # (1, "no_newlines"),
+        # (1, "spaces"),
+        # (1, "tabs"),
+    ],
+    indirect=True,
+)
+def test_generate_assembly(source_code: str):
+    lexer = Lexer(source_code)
+    actual_tokens = lexer.lex()
+    ast = Parser(actual_tokens)
+    program = ast.parse_program()
+    assembly = generate_assembly(program)
+    print(assembly)
+    assert len(assembly) == 4

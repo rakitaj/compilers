@@ -1,0 +1,7 @@
+(program 
+    (functions
+        (function main
+            (statements
+                (statement
+                    (expression 2)
+)))))

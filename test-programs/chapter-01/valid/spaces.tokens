@@ -1,0 +1,10 @@
+{"type":"KEYWORD_INT","lexeme":"int","line":0,"col":3}
+{"type":"IDENTIFIER","lexeme":"main","line":0,"col":9}
+{"type":"OPEN_PAREN","lexeme":"(","line":0,"col":17}
+{"type":"CLOSE_PAREN","lexeme":")","line":0,"col":20}
+{"type":"OPEN_BRACE","lexeme":"{","line":0,"col":23}
+{"type":"KEYWORD_RETURN","lexeme":"return","line":0,"col":27}
+{"type":"INTEGER","lexeme":"0","line":0,"col":35}
+{"type":"SEMICOLON","lexeme":";","line":0,"col":37}
+{"type":"CLOSE_BRACE","lexeme":"}","line":0,"col":39}
+{"type":"EOF","lexeme":"","line":0,"col":40}
