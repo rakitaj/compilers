@@ -3,23 +3,28 @@ from collections.abc import Callable
 from tokens import KEYWORD_TOKENS, SINGLE_CHAR_TOKENS, Token, TokenType
 
 PredicateType = Callable[[str], bool]
+NEWLINE_CHARS = {"\n", "\r", "\r\n"}
 
 
 class Lexer:
     def __init__(self, text: str, tab_size: int = 4):
         self.text = text
-        self.line = 0
+        self.line = 1
         self.col = 0
         self.idx = 0
         self.tab_size = tab_size
 
     def reset(self):
-        self.line = 0
+        self.line = 1
         self.col = 0
         self.idx = 0
 
     def get(self) -> str:
         return self.text[self.idx]
+
+    def peek(self, n: int) -> str:
+        """Return the character n ahead of the current index. This is unsafe and doesn't check array bounds."""
+        return self.text[self.idx + n]
 
     def is_at_end(self) -> bool:
         return self.idx >= len(self.text)
@@ -27,13 +32,16 @@ class Lexer:
     def get_lexeme(self, length: int) -> str:
         return self.text[self.idx : self.idx + length]
 
-    def take_until(self, pred: PredicateType) -> tuple[str, int]:
+    def take_while(self, pred: PredicateType) -> tuple[str, int]:
         """Returns the lexeme and length of it."""
         content: list[str] = []
         while pred(char := self.get()):
             content.append(char)
             self.idx += 1
             self.col += 1
+            if char in NEWLINE_CHARS:
+                self.line += 1
+
         return ("".join(content), self.idx)
 
     def take_keyword_or_identifier(self) -> tuple[str, int]:
@@ -42,7 +50,7 @@ class Lexer:
         def _is_keyword_or_ident(char: str) -> bool:
             return char.isalnum() or char in {"-", "_"}
 
-        return self.take_until(_is_keyword_or_ident)
+        return self.take_while(_is_keyword_or_ident)
 
     def take_number(self) -> tuple[str, int]:
         """Works for both integers and floats."""
@@ -50,7 +58,7 @@ class Lexer:
         def _is_number(c: str) -> bool:
             return c.isnumeric() or c == "."
 
-        return self.take_until(_is_number)
+        return self.take_while(_is_number)
 
     def lex(self) -> list[Token]:
         tokens: list[Token] = list()
@@ -58,7 +66,11 @@ class Lexer:
             char = self.get()
             start = self.col
 
-            if char == " ":
+            if char == "/" and self.peek(1) == "/":
+                # Single line comment. Discard the lexeme.
+                _ = self.take_while(lambda x: x not in NEWLINE_CHARS)
+                continue
+            elif char == " ":
                 # Spaces
                 self.idx += 1
                 self.col += 1
@@ -68,7 +80,7 @@ class Lexer:
                 self.idx += 1
                 self.col += self.tab_size - (self.col % self.tab_size)
                 continue
-            elif char in {"\n", "\r", "\r\n"}:
+            elif char in NEWLINE_CHARS:
                 self.idx += 1
                 self.line += 1
                 self.col = 0

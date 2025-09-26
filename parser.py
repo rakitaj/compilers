@@ -126,13 +126,16 @@ def pretty_print(node: Program | Function | Statement | Expression, indent: int 
         print(f"\n{padding}Program begins:")
         for function in node.functions:
             pretty_print(function, indent + 2)
+
     elif isinstance(node, Function):
         print(f"{padding}Function - {node.name}")
         for statement in node.statements:
             pretty_print(statement, indent + 2)
+
     elif isinstance(node, Statement):
         print(f"{padding}Statement - {node.value}")
         # Hack! A statement can only have one expr right now.
         pretty_print(node.value, indent + 2)
+
     else:  # Always an expression by this point
         print(f"{padding}Expr value - {node.value}")

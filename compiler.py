@@ -9,17 +9,20 @@ def post_order(node: Program | Function | Statement | Expression, depth: int) ->
             assembly.extend([f".globl {function.name}", f"{function.name}:"])
             assembly.extend(after)
         return assembly
+
     elif isinstance(node, Function):
         assembly: list[str] = []
         for statement in node.statements:
             after = post_order(statement, depth + 1)
             assembly.extend(after)
         return assembly
+
     elif isinstance(node, Statement):
         expr_asm = post_order(node.value, depth + 1)
         expr_asm.append("ret")
         return expr_asm
         # Hack! A statement can only have one expr right now.
+
     else:  # Always an expression by this point
         return [f"movl ${node.value}, %eax"]
 

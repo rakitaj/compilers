@@ -16,5 +16,8 @@
     "[python]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "files.associations": {
+        "*.tokens": "jsonl"
     }
 }

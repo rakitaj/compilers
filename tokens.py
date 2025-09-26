@@ -14,6 +14,9 @@ class TokenType(Enum):
     IDENTIFIER = auto()
     INTEGER = auto()
     EOF = auto()
+    NEGATION = auto()
+    BITWISE_COMPLEMENT = auto()
+    LOGICAL_NEGATION = auto()
 
 
 @dataclass(frozen=True)
@@ -30,6 +33,9 @@ SINGLE_CHAR_TOKENS = {
     "(": TokenType.OPEN_PAREN,
     ")": TokenType.CLOSE_PAREN,
     ";": TokenType.SEMICOLON,
+    "-": TokenType.NEGATION,
+    "!": TokenType.LOGICAL_NEGATION,
+    "~": TokenType.BITWISE_COMPLEMENT,
 }
 
 KEYWORD_TOKENS = {
