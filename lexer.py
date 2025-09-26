@@ -1,6 +1,7 @@
 from collections.abc import Callable
 
 from tokens import KEYWORD_TOKENS, SINGLE_CHAR_TOKENS, Token, TokenType
+from lexer_errors import UnknownCharError
 
 PredicateType = Callable[[str], bool]
 NEWLINE_CHARS = {"\n", "\r", "\r\n"}
@@ -26,25 +27,31 @@ class Lexer:
         """Return the character n ahead of the current index. This is unsafe and doesn't check array bounds."""
         return self.text[self.idx + n]
 
+    def consume(self) -> str:
+        """Get the current character, return it, and advance the lexer one char."""
+        char = self.get()
+        self.idx += 1
+        self.col += 1
+        if char in NEWLINE_CHARS:
+            self.line += 1
+            self.col = 0
+        return char
+
     def is_at_end(self) -> bool:
         return self.idx >= len(self.text)
 
     def get_lexeme(self, length: int) -> str:
         return self.text[self.idx : self.idx + length]
 
-    def take_while(self, pred: PredicateType) -> tuple[str, int]:
-        """Returns the lexeme and length of it."""
-        content: list[str] = []
-        while pred(char := self.get()):
-            content.append(char)
-            self.idx += 1
-            self.col += 1
-            if char in NEWLINE_CHARS:
-                self.line += 1
+    def take_while(self, pred: PredicateType) -> str:
+        """Returns the lexeme."""
+        start = self.idx
+        while pred(self.get()):
+            _ = self.consume()
 
-        return ("".join(content), self.idx)
+        return self.text[start : self.idx]
 
-    def take_keyword_or_identifier(self) -> tuple[str, int]:
+    def take_keyword_or_identifier(self) -> str:
         """Once the first character is alpha then others are allowed."""
 
         def _is_keyword_or_ident(char: str) -> bool:
@@ -52,7 +59,7 @@ class Lexer:
 
         return self.take_while(_is_keyword_or_ident)
 
-    def take_number(self) -> tuple[str, int]:
+    def take_number(self) -> str:
         """Works for both integers and floats."""
 
         def _is_number(c: str) -> bool:
@@ -69,6 +76,14 @@ class Lexer:
             if char == "/" and self.peek(1) == "/":
                 # Single line comment. Discard the lexeme.
                 _ = self.take_while(lambda x: x not in NEWLINE_CHARS)
+                continue
+            elif char == "/" and self.peek(1) == "*":
+                first_char = self.get()
+                second_char = self.peek(1)
+                while first_char != "*" and second_char != "/":
+                    _ = self.consume()
+                # When the loop exits we still need to consume the final slash.
+                _ = self.consume()
                 continue
             elif char == " ":
                 # Spaces
@@ -95,7 +110,7 @@ class Lexer:
                 self.col += 1
             elif char.isalpha():
                 # Keyword or identifier
-                lexeme, _ = self.take_keyword_or_identifier()
+                lexeme = self.take_keyword_or_identifier()
                 if lexeme in KEYWORD_TOKENS:
                     token_type = KEYWORD_TOKENS[lexeme]
                 else:
@@ -103,9 +118,9 @@ class Lexer:
             elif char.isnumeric():
                 # Integer or float
                 token_type = TokenType.INTEGER
-                lexeme, _ = self.take_number()
+                lexeme = self.take_number()
             else:
-                raise ValueError(char, "Character not recognized during lexing.")
+                raise UnknownCharError(char, self.line, self.col)
             token = Token(token_type, lexeme, self.line, start)
             tokens.append(token)
         tokens.append(Token(TokenType.EOF, "", self.line, self.col))

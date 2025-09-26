@@ -32,12 +32,12 @@ def source_to_known_tokens(request: pytest.FixtureRequest) -> tuple[str, list[To
 
 @pytest.fixture
 def source_code(request: pytest.FixtureRequest) -> str:
-    stage, name = request.param
+    stage, folder, name = request.param
     script_path = Path(__file__).resolve()
     script_directory = script_path.parent
 
     # Load program source
-    program_path = f"{script_directory}/test-programs/chapter-{stage:02}/valid/{name}.c"
+    program_path = f"{script_directory}/test-programs/chapter-{stage:02}/{folder}/{name}.c"
     with open(program_path, "r") as fp:
         program_source = fp.read()
 

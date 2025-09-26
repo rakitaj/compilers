@@ -1,6 +1,7 @@
 import pytest
 
 from lexer import Lexer, Token
+from lexer_errors import UnknownCharError
 
 
 @pytest.mark.parametrize(
@@ -21,3 +22,11 @@ def test_lexer_against_known_tokens(source_to_known_tokens: tuple[str, list[Toke
     lexer = Lexer(source)
     actual_tokens = lexer.lex()
     assert known_tokens == actual_tokens
+
+
+@pytest.mark.parametrize("source_code", [(1, "invalid_lex", "at_sign")], indirect=True)
+def test_lexer_against_invalid(source_code: str):
+    lexer = Lexer(source_code)
+    with pytest.raises(UnknownCharError) as ex_info:
+        _ = lexer.lex()
+    assert ex_info.value.char == "/"
