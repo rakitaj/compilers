@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
 from tokens import KEYWORD_TOKENS, SINGLE_CHAR_TOKENS, Token, TokenType
-from lexer_errors import UnknownCharError
+from lexer_errors import InvalidCharError
 
 PredicateType = Callable[[str], bool]
 NEWLINE_CHARS = {"\n", "\r", "\r\n"}
@@ -78,11 +78,15 @@ class Lexer:
                 _ = self.take_while(lambda x: x not in NEWLINE_CHARS)
                 continue
             elif char == "/" and self.peek(1) == "*":
-                first_char = self.get()
-                second_char = self.peek(1)
-                while first_char != "*" and second_char != "/":
+                # When it starts I need to consume the opening token.
+                _ = self.consume()
+                _ = self.consume()
+
+                while self.get() != "*" or self.peek(1) != "/":
                     _ = self.consume()
+                    
                 # When the loop exits we still need to consume the final slash.
+                _ = self.consume()
                 _ = self.consume()
                 continue
             elif char == " ":
@@ -120,7 +124,7 @@ class Lexer:
                 token_type = TokenType.INTEGER
                 lexeme = self.take_number()
             else:
-                raise UnknownCharError(char, self.line, self.col)
+                raise InvalidCharError(char, self.line, self.col)
             token = Token(token_type, lexeme, self.line, start)
             tokens.append(token)
         tokens.append(Token(TokenType.EOF, "", self.line, self.col))

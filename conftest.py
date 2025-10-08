@@ -33,6 +33,9 @@ def source_to_known_tokens(request: pytest.FixtureRequest) -> tuple[str, list[To
 @pytest.fixture
 def source_code(request: pytest.FixtureRequest) -> str:
     stage, folder, name = request.param
+    return source_code_loader(stage, folder, name)
+
+def source_code_loader(stage: int, folder: str, name: str) -> str:
     script_path = Path(__file__).resolve()
     script_directory = script_path.parent
 

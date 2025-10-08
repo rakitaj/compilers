@@ -1,18 +1,42 @@
 from __future__ import annotations
-
 from dataclasses import dataclass
-
+from abc import ABC, abstractmethod
 from tokens import Token, TokenType
 
 
+
+class Expression(ABC):
+    
+    @abstractmethod
+    def evaluate(self) -> int:
+        pass
+
 @dataclass
-class Expression:
+class ConstantInt(Expression):
     value: int
 
+    def evaluate(self) -> int:
+        return self.value
+
+
+@dataclass
+class UnaryOp(Expression):
+    operator: TokenType
+    inner_expr: Expression
+
+    def __init__(self, operator: TokenType, operand: Expression):
+        if operator not in {TokenType.BITWISE_COMPLEMENT, TokenType.LOGICAL_NEGATION, TokenType.NEGATION}:
+            raise ValueError(f"Invalid token type for unary operation {operator}.")
+        self.operator = operator
+        self.inner_expr = operand
+
+    def evaluate(self) -> int:
+        return super().evaluate()
+            
 
 @dataclass
 class Statement:
-    value: Expression
+    expr: Expression
 
 
 @dataclass
@@ -115,9 +139,17 @@ class Parser:
         return statements
 
     def parse_expression(self) -> Expression:
-        number_str = self.get().lexeme
-        self.idx += 1
-        return Expression(int(number_str))
+        token = self.consume()
+        if token.token_type == TokenType.INTEGER:
+            integer = int(token.lexeme)
+            return ConstantInt(integer)
+        else:
+            op = token.token_type
+            inner_expr = self.parse_expression()
+            return UnaryOp(op, inner_expr)
+        # number_str = self.get().lexeme
+        # self.idx += 1
+        # return Expression(int(number_str))
 
 
 def pretty_print(node: Program | Function | Statement | Expression, indent: int = 0) -> None:
@@ -133,9 +165,9 @@ def pretty_print(node: Program | Function | Statement | Expression, indent: int 
             pretty_print(statement, indent + 2)
 
     elif isinstance(node, Statement):
-        print(f"{padding}Statement - {node.value}")
+        print(f"{padding}Statement - {node.expr}")
         # Hack! A statement can only have one expr right now.
-        pretty_print(node.value, indent + 2)
+        pretty_print(node.expr, indent + 2)
 
     else:  # Always an expression by this point
-        print(f"{padding}Expr value - {node.value}")
+        print(f"{padding}Expr value - {node}")

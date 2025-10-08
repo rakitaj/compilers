@@ -18,7 +18,7 @@ def post_order(node: Program | Function | Statement | Expression, depth: int) ->
         return assembly
 
     elif isinstance(node, Statement):
-        expr_asm = post_order(node.value, depth + 1)
+        expr_asm = post_order(node.expr, depth + 1)
         expr_asm.append("ret")
         return expr_asm
         # Hack! A statement can only have one expr right now.

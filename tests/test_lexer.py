@@ -1,7 +1,7 @@
 import pytest
-
+from conftest import source_code_loader
 from lexer import Lexer, Token
-from lexer_errors import UnknownCharError
+from lexer_errors import InvalidCharError
 
 
 @pytest.mark.parametrize(
@@ -24,9 +24,18 @@ def test_lexer_against_known_tokens(source_to_known_tokens: tuple[str, list[Toke
     assert known_tokens == actual_tokens
 
 
-@pytest.mark.parametrize("source_code", [(1, "invalid_lex", "at_sign")], indirect=True)
-def test_lexer_against_invalid(source_code: str):
+@pytest.mark.parametrize(
+    "filename, invalid_char",
+    [
+        ("at_sign", "@"),
+        ("backslash", "\\"),
+        ("backtick", "`"),
+        ("invalid_identifier_2", "@"),
+    ],
+)
+def test_lexer_against_unknown_char(filename: str, invalid_char: str):
+    source_code = source_code_loader(1, "invalid_lex", filename)
     lexer = Lexer(source_code)
-    with pytest.raises(UnknownCharError) as ex_info:
+    with pytest.raises(InvalidCharError) as ex_info:
         _ = lexer.lex()
-    assert ex_info.value.char == "/"
+    assert ex_info.value.char == invalid_char
