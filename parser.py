@@ -4,12 +4,11 @@ from abc import ABC, abstractmethod
 from tokens import Token, TokenType
 
 
-
 class Expression(ABC):
-    
     @abstractmethod
     def evaluate(self) -> int:
         pass
+
 
 @dataclass
 class ConstantInt(Expression):
@@ -32,7 +31,7 @@ class UnaryOp(Expression):
 
     def evaluate(self) -> int:
         return super().evaluate()
-            
+
 
 @dataclass
 class Statement:

@@ -84,7 +84,7 @@ class Lexer:
 
                 while self.get() != "*" or self.peek(1) != "/":
                     _ = self.consume()
-                    
+
                 # When the loop exits we still need to consume the final slash.
                 _ = self.consume()
                 _ = self.consume()

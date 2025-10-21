@@ -11,6 +11,7 @@ class InvalidCharError(LexicalError):
         message = f"Unknown character:[{char}]@{line}:{col}"
         super().__init__(message, line, col)
 
+
 class InvalidIdentifier(LexicalError):
     def __init__(self, ident: str, line: int, col: int):
         self.ident = ident

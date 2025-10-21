@@ -35,6 +35,7 @@ def source_code(request: pytest.FixtureRequest) -> str:
     stage, folder, name = request.param
     return source_code_loader(stage, folder, name)
 
+
 def source_code_loader(stage: int, folder: str, name: str) -> str:
     script_path = Path(__file__).resolve()
     script_directory = script_path.parent
@@ -43,6 +44,18 @@ def source_code_loader(stage: int, folder: str, name: str) -> str:
     program_path = f"{script_directory}/test-programs/chapter-{stage:02}/{folder}/{name}.c"
     with open(program_path, "r") as fp:
         program_source = fp.read()
+
+    return program_source
+
+
+def known_assembly_loader(stage: int, folder: str, name: str) -> list[str]:
+    script_path = Path(__file__).resolve()
+    script_directory = script_path.parent
+
+    # Load known assembly file
+    program_path = f"{script_directory}/test-programs/chapter-{stage:02}/{folder}/{name}.asm"
+    with open(program_path, "r") as fp:
+        program_source = fp.readlines()
 
     return program_source
 
