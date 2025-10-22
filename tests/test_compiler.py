@@ -60,7 +60,4 @@ def test_generate_assembly_matches_expected(stage: int, folder: str, name: str):
     # Compare
     is_equal, issues = assert_assembly_equal(actual_assembly, expected_assembly)
     
-    # if not is_equal:
-    #     error_msg = "Assembly mismatch:\n" + "\n".join(issues)
-    #     pytest.fail(error_msg)
     assert is_equal is True, issues
