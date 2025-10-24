@@ -2,8 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
-
-from lexer import Token, TokenType
+from tokens import Token, token_decoder
 
 
 @pytest.fixture
@@ -20,12 +19,14 @@ def source_to_known_tokens(request: pytest.FixtureRequest) -> tuple[str, list[To
     # Load expected tokens
     tokens_path = f"{script_directory}/test-programs/chapter-{stage:02}/valid/{name}.tokens"
     with open(tokens_path, "r") as fp:
-        lines = fp.readlines()
+        expected_tokens_str = fp.read()
 
-    tokens: list[Token] = []
-    for line in lines:
-        token = parse_known_token(line)
-        tokens.append(token)
+    tokens = json.loads(expected_tokens_str, object_hook=token_decoder)
+
+    # tokens: list[Token] = []
+    # for line in lines:
+    #     token = parse_known_token(line)
+    #     tokens.append(token)
 
     return program_source, tokens
 
@@ -60,7 +61,7 @@ def known_assembly_loader(stage: int, folder: str, name: str) -> list[str]:
     return program_source
 
 
-def parse_known_token(token_str: str) -> Token:
-    data = json.loads(token_str.strip())
-    token_type = TokenType[data["type"]]
-    return Token(token_type, data["lexeme"], data["line"], data["col"])
+# def parse_known_token(token_str: str) -> Token:
+#     data = json.loads(token_str.strip())
+#     token_type = TokenType[data["type"]]
+#     return Token(token_type, data["lexeme"], data["line"], data["col"])

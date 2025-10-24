@@ -1,6 +1,7 @@
 import pytest
 from conftest import source_code_loader
-from lexer import Lexer, Token
+from lexer import Lexer
+from tokens import Token
 from lexer_errors import InvalidCharError
 
 
@@ -52,3 +53,6 @@ def test_lexer_against_unknown_char(filename: str, invalid_char: str):
     with pytest.raises(InvalidCharError) as ex_info:
         _ = lexer.lex()
     assert ex_info.value.char == invalid_char
+
+
+

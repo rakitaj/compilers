@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum, auto
-
+import json
+from typing import Any
+from collections.abc import Callable
 
 class TokenType(Enum):
     OPEN_BRACE = auto()
@@ -43,3 +45,21 @@ KEYWORD_TOKENS = {
     "return": TokenType.KEYWORD_RETURN,
     "void": TokenType.KEYWORD_VOID,
 }
+
+class TokenEncoder(json.JSONEncoder):
+    def default(self, o: Any) -> Any:
+        if isinstance(o, Token):
+            
+            return {
+                "lexeme": o.lexeme,
+                "line": o.line,
+                "column": o.column,
+                "token_type": o.token_type.name
+            }
+        return super().default(o)
+
+def token_decoder(obj_dict: dict[Any, Any]) -> Token:
+    """Provide this to object_hook"""
+    token_type = TokenType[obj_dict["token_type"]]
+    column_name = "col" if "col" in obj_dict else "column"
+    return Token(token_type, obj_dict["lexeme"], obj_dict["line"], obj_dict[column_name])

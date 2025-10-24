@@ -10,7 +10,7 @@ from typing import Self
 from compiler import generate_assembly
 from lexer import Lexer
 from parser import Parser, Program
-from tokens import Token
+from tokens import Token, TokenEncoder
 
 from collections.abc import Callable
 
@@ -55,25 +55,26 @@ arg_parser = argparse.ArgumentParser()
 
 arg_parser.add_argument("file", help="Path to the source file.", type=str)
 arg_parser.add_argument("--compile", help="Compile instead of just generating the assembly.", type=bool)
+arg_parser.add_argument("--debug-dump-tokens", help="Debug: Dump the internal token representation to stdout", type=bool)
 args = arg_parser.parse_args()
 
 parsed_args = ProgramArgs.from_args(args)
+
+with open(parsed_args.filepath, "r") as fp:
+    program_source = fp.read()
 
 script_dir = Path(__file__).parent
 # Create a new file in the same directory
 output_file = script_dir / parsed_args.get_assembly_filename()
 
-with open(parsed_args.filepath, "r") as fp:
-    program_source = fp.read()
+# assembly = program_source | pipe(lex) | pipe(parse) | pipe(assemble)
 
-assembly = program_source | pipe(lex) | pipe(parse) | pipe(assemble)
-
-with open(output_file, "w") as file:
-    for line in assembly:
-        file.write(line)
-        file.write(os.linesep)
+# with open(output_file, "w") as fp:
+#     for line in assembly:
+#         fp.write(line)
+#         fp.write(os.linesep)
 
 if parsed_args.debug_dump_tokens:
     tokens = program_source | pipe(lex)
-    with open(output_file, "w") as file:
-        
+    tokens_json = json.dumps(tokens, cls=TokenEncoder)
+    print(tokens_json)
