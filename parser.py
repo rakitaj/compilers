@@ -146,9 +146,6 @@ class Parser:
             op = token.token_type
             inner_expr = self.parse_expression()
             return UnaryOp(op, inner_expr)
-        # number_str = self.get().lexeme
-        # self.idx += 1
-        # return Expression(int(number_str))
 
 
 def pretty_print(node: Program | Function | Statement | Expression, indent: int = 0) -> None:

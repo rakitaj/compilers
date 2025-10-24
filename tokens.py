@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from enum import Enum, auto
 import json
 from typing import Any
-from collections.abc import Callable
 
 class TokenType(Enum):
     OPEN_BRACE = auto()

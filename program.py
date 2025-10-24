@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import os
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -66,13 +65,6 @@ with open(parsed_args.filepath, "r") as fp:
 script_dir = Path(__file__).parent
 # Create a new file in the same directory
 output_file = script_dir / parsed_args.get_assembly_filename()
-
-# assembly = program_source | pipe(lex) | pipe(parse) | pipe(assemble)
-
-# with open(output_file, "w") as fp:
-#     for line in assembly:
-#         fp.write(line)
-#         fp.write(os.linesep)
 
 if parsed_args.debug_dump_tokens:
     tokens = program_source | pipe(lex)
