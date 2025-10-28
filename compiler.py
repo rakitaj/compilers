@@ -1,4 +1,5 @@
-from parser import Expression, Function, Program, Statement
+from parser import Expression, Function, Program, Statement, UnaryOp, ConstantInt
+from tokens import TokenType
 
 
 def post_order(node: Program | Function | Statement | Expression, depth: int) -> list[str]:
@@ -23,8 +24,16 @@ def post_order(node: Program | Function | Statement | Expression, depth: int) ->
         return expr_asm
         # Hack! A statement can only have one expr right now.
 
-    else:  # Always an expression by this point
+    # Into expressions
+    elif isinstance(node, UnaryOp):
+        asm = post_order(node.inner_expr, depth + 1)
+        if node.operator == TokenType.NEGATION:
+            asm.append("neg %eax")
+            return asm
+    elif isinstance(node, ConstantInt):
         return [f"movl ${node.value}, %eax"]
+    else:
+        raise ValueError(f"Unknown node[{node}]")
 
 
 def generate_assembly(program: Program) -> list[str]:

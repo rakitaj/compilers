@@ -3,6 +3,7 @@ from enum import Enum, auto
 import json
 from typing import Any
 
+
 class TokenType(Enum):
     OPEN_BRACE = auto()
     CLOSE_BRACE = auto()
@@ -45,17 +46,15 @@ KEYWORD_TOKENS = {
     "void": TokenType.KEYWORD_VOID,
 }
 
+UNARY_OP_TOKENS = {TokenType.NEGATION, TokenType.BITWISE_COMPLEMENT, TokenType.LOGICAL_NEGATION}
+
+
 class TokenEncoder(json.JSONEncoder):
     def default(self, o: Any) -> Any:
         if isinstance(o, Token):
-            
-            return {
-                "lexeme": o.lexeme,
-                "line": o.line,
-                "column": o.column,
-                "token_type": o.token_type.name
-            }
+            return {"lexeme": o.lexeme, "line": o.line, "column": o.column, "token_type": o.token_type.name}
         return super().default(o)
+
 
 def token_decoder(obj_dict: dict[Any, Any]) -> Token:
     """Provide this to object_hook"""

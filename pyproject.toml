@@ -3,7 +3,7 @@ name = "interview-pyqs"
 version = "0.1.0"
 description = "Python takes on standard interview questions."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 license = { file = "LICENSE" }
 authors = [
     { name = "Joshua Rakita", email = "joraki@microsoft.com" },

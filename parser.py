@@ -1,21 +1,15 @@
-from __future__ import annotations
 from dataclasses import dataclass
-from abc import ABC, abstractmethod
-from tokens import Token, TokenType
+from abc import ABC
+from tokens import Token, TokenType, UNARY_OP_TOKENS
 
 
 class Expression(ABC):
-    @abstractmethod
-    def evaluate(self) -> int:
-        pass
+    pass
 
 
 @dataclass
 class ConstantInt(Expression):
     value: int
-
-    def evaluate(self) -> int:
-        return self.value
 
 
 @dataclass
@@ -24,13 +18,10 @@ class UnaryOp(Expression):
     inner_expr: Expression
 
     def __init__(self, operator: TokenType, operand: Expression):
-        if operator not in {TokenType.BITWISE_COMPLEMENT, TokenType.LOGICAL_NEGATION, TokenType.NEGATION}:
+        if operator not in UNARY_OP_TOKENS:
             raise ValueError(f"Invalid token type for unary operation {operator}.")
         self.operator = operator
         self.inner_expr = operand
-
-    def evaluate(self) -> int:
-        return super().evaluate()
 
 
 @dataclass
@@ -54,12 +45,8 @@ class Function:
 
 
 class Program:
-    def __init__(self) -> None:
-        self.functions: list[Function] = []
-
-
-def is_statement_start(tokens: list[Token], idx: int) -> bool:
-    return tokens[idx].token_type == TokenType.KEYWORD_RETURN
+    def __init__(self, functions: list[Function] | None = None) -> None:
+        self.functions: list[Function] = functions or []
 
 
 class Parser:
@@ -99,8 +86,8 @@ class Parser:
             return (False, msg)
 
     def parse_program(self) -> Program:
-        program = Program()
-        program.functions.extend(self.parse_functions())
+        functions = self.parse_functions()
+        program = Program(functions)
         return program
 
     def parse_functions(self) -> list[Function]:
@@ -139,13 +126,13 @@ class Parser:
 
     def parse_expression(self) -> Expression:
         token = self.consume()
-        if token.token_type == TokenType.INTEGER:
+        if token.token_type in UNARY_OP_TOKENS:
+            operator = token
+            inner_expr = self.parse_expression()
+            return UnaryOp(operator.token_type, inner_expr)
+        else:
             integer = int(token.lexeme)
             return ConstantInt(integer)
-        else:
-            op = token.token_type
-            inner_expr = self.parse_expression()
-            return UnaryOp(op, inner_expr)
 
 
 def pretty_print(node: Program | Function | Statement | Expression, indent: int = 0) -> None:
