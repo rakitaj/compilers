@@ -1,5 +1,5 @@
 [project]
-name = "interview-pyqs"
+name = "compilers"
 version = "0.1.0"
 description = "Python takes on standard interview questions."
 readme = "README.md"
