@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
 from tokens import KEYWORD_TOKENS, SINGLE_CHAR_TOKENS, Token, TokenType
-from lexer_errors import InvalidCharError
+from cerrors import InvalidCharError
 
 PredicateType = Callable[[str], bool]
 NEWLINE_CHARS = {"\n", "\r", "\r\n"}

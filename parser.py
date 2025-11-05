@@ -1,16 +1,8 @@
 from dataclasses import dataclass
 from abc import ABC
 from tokens import Token, TokenType, UNARY_OP_TOKENS
+from cerrors import CSyntaxError
 
-class CSyntaxError(Exception):
-    def __init__(self, message: str, line: int, col: int):
-        self.message = message
-        self.line = line
-        self.col = col
-
-    @classmethod
-    def expected_token(cls, message: str, token: Token, line: int, col: int) -> CSyntaxError:
-        
 
 class Expression(ABC):
     pass
@@ -86,19 +78,12 @@ class Parser:
         self.idx += 1
         return token
 
-    # def expect(self, token_type: TokenType) -> tuple[bool, str]:
-    #     token = self.get(0)
-    #     if token.token_type == token_type:
-    #         return (True, "")
-    #     else:
-    #         msg = f"Expected {token_type} at i:{self.idx}. Found: {token}"
-    #         return (False, msg)
     def expect(self, token_type: TokenType) -> Token:
         token = self.consume()
         if token.token_type == token_type:
             return token
         else:
-            raise 
+            raise CSyntaxError(token_type, token)
 
     def parse_program(self) -> Program:
         functions = self.parse_functions()
@@ -120,10 +105,11 @@ class Parser:
                 # self.idx += 5
                 statements = self.parse_statements()
                 function = Function(name, statements)
-                if is_valid_function := self.expect(TokenType.CLOSE_BRACE):
-                    self.idx += 1
-                else:
-                    raise ValueError(is_valid_function[1])
+                _ = self.expect(TokenType.CLOSE_BRACE)
+                # if is_valid_function := self.expect(TokenType.CLOSE_BRACE):
+                #     self.idx += 1
+                # else:
+                #     raise ValueError(is_valid_function[1])
                 functions.append(function)
         return functions
 
@@ -132,11 +118,13 @@ class Parser:
         while self.get().token_type == TokenType.KEYWORD_RETURN:
             self.idx += 1
             statement = Statement(self.parse_expression())
-            if is_valid_statement := self.expect(TokenType.SEMICOLON):
-                statements.append(statement)
-                self.idx += 1
-            else:
-                raise ValueError(is_valid_statement[1])
+            _ = self.expect(TokenType.SEMICOLON)
+            statements.append(statement)
+            # if is_valid_statement := self.expect(TokenType.SEMICOLON):
+            #     statements.append(statement)
+            #     self.idx += 1
+            # else:
+            #     raise ValueError(is_valid_statement[1])
         return statements
 
     def parse_expression(self) -> Expression:
@@ -147,8 +135,7 @@ class Parser:
             return UnaryOp(operator.token_type, inner_expr)
         elif token.token_type == TokenType.OPEN_PAREN:
             inner_expr = self.parse_expression()
-            self.expect(TokenType.CLOSE_PAREN)
-            _ = self.consume()
+            _ = self.expect(TokenType.CLOSE_PAREN)
         else:
             integer = int(token.lexeme)
             return ConstantInt(integer)

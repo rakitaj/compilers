@@ -2,7 +2,7 @@ import pytest
 from conftest import source_code_loader
 from lexer import Lexer
 from tokens import Token
-from lexer_errors import InvalidCharError
+from cerrors import InvalidCharError
 
 
 @pytest.mark.parametrize(
@@ -15,7 +15,6 @@ from lexer_errors import InvalidCharError
         (1, "no_newlines"),
         (1, "spaces"),
         (1, "tabs"),
-
         (2, "bitwise_int_min"),
         (2, "bitwise_zero"),
         (2, "bitwise"),
@@ -53,6 +52,3 @@ def test_lexer_against_unknown_char(filename: str, invalid_char: str):
     with pytest.raises(InvalidCharError) as ex_info:
         _ = lexer.lex()
     assert ex_info.value.char == invalid_char
-
-
-
