@@ -2,12 +2,13 @@ import pytest
 import json
 from tokens import Token, TokenType, token_decoder
 
+
 @pytest.mark.parametrize(
     "known_token, expected",
     [
         (
-            """{"token_type": "KEYWORD_INT", "lexeme": "int", "line": 0, "col": 0}""",
-            Token(TokenType.KEYWORD_INT, "int", 0, 0),
+            """{"token_type": "KW_INT", "lexeme": "int", "line": 0, "col": 0}""",
+            Token(TokenType.KW_INT, "int", 0, 0),
         ),
         (
             """{"token_type": "IDENTIFIER", "lexeme": "main", "line": 0, "col": 4}""",

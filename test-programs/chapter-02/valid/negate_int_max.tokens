@@ -3,7 +3,7 @@
         "lexeme": "int",
         "line": 1,
         "column": 0,
-        "token_type": "KEYWORD_INT"
+        "token_type": "KW_INT"
     },
     {
         "lexeme": "main",
@@ -21,7 +21,7 @@
         "lexeme": "void",
         "line": 1,
         "column": 9,
-        "token_type": "KEYWORD_VOID"
+        "token_type": "KW_VOID"
     },
     {
         "lexeme": ")",
@@ -39,7 +39,7 @@
         "lexeme": "return",
         "line": 3,
         "column": 4,
-        "token_type": "KEYWORD_RETURN"
+        "token_type": "KW_RETURN"
     },
     {
         "lexeme": "-",
@@ -51,7 +51,7 @@
         "lexeme": "2147483647",
         "line": 3,
         "column": 12,
-        "token_type": "INTEGER"
+        "token_type": "LITERAL_INTEGER"
     },
     {
         "lexeme": ";",

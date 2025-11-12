@@ -93,11 +93,11 @@ class Parser:
     def parse_functions(self) -> list[Function]:
         functions: list[Function] = []
         while self.get().token_type != TokenType.EOF:
-            if self.check_sequence(TokenType.KEYWORD_INT, TokenType.IDENTIFIER, TokenType.OPEN_PAREN):
+            if self.check_sequence(TokenType.KW_INT, TokenType.IDENTIFIER, TokenType.OPEN_PAREN):
                 name = self.get(1).lexeme
                 self.idx += 3
                 parameters: list[Parameter] = []
-                if self.check_sequence(TokenType.KEYWORD_VOID):
+                if self.check_sequence(TokenType.KW_VOID):
                     param = Parameter(self.get(), "")
                     parameters.append(param)
                     self.idx += 1
@@ -111,7 +111,7 @@ class Parser:
 
     def parse_statements(self) -> list[Statement]:
         statements: list[Statement] = []
-        while self.get().token_type == TokenType.KEYWORD_RETURN:
+        while self.get().token_type == TokenType.KW_RETURN:
             self.idx += 1
             statement = Statement(self.parse_expression())
             _ = self.expect(TokenType.SEMICOLON)

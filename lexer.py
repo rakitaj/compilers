@@ -121,7 +121,7 @@ class Lexer:
                     token_type = TokenType.IDENTIFIER
             elif char.isnumeric():
                 # Integer or float
-                token_type = TokenType.INTEGER
+                token_type = TokenType.LITERAL_INTEGER
                 lexeme = self.take_number()
             else:
                 raise InvalidCharError(char, self.line, self.col)
