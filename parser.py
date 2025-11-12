@@ -106,10 +106,6 @@ class Parser:
                 statements = self.parse_statements()
                 function = Function(name, statements)
                 _ = self.expect(TokenType.CLOSE_BRACE)
-                # if is_valid_function := self.expect(TokenType.CLOSE_BRACE):
-                #     self.idx += 1
-                # else:
-                #     raise ValueError(is_valid_function[1])
                 functions.append(function)
         return functions
 
@@ -120,11 +116,6 @@ class Parser:
             statement = Statement(self.parse_expression())
             _ = self.expect(TokenType.SEMICOLON)
             statements.append(statement)
-            # if is_valid_statement := self.expect(TokenType.SEMICOLON):
-            #     statements.append(statement)
-            #     self.idx += 1
-            # else:
-            #     raise ValueError(is_valid_statement[1])
         return statements
 
     def parse_expression(self) -> Expression:
@@ -136,6 +127,7 @@ class Parser:
         elif token.token_type == TokenType.OPEN_PAREN:
             inner_expr = self.parse_expression()
             _ = self.expect(TokenType.CLOSE_PAREN)
+            return inner_expr
         else:
             integer = int(token.lexeme)
             return ConstantInt(integer)
