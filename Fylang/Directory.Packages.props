@@ -1,12 +1,13 @@
 <Project>
-<PropertyGroup>
+  <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-</PropertyGroup>
-<ItemGroup>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="FSharp.Data" Version="6.6.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageVersion Include="FsUnit" Version="7.1.1" />
     <PackageVersion Include="xunit" Version="2.4.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
-</ItemGroup>
+  </ItemGroup>
 </Project>

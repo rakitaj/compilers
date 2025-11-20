@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FSharp.Data" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="FsUnit" />
     <PackageReference Include="xunit" />
@@ -29,6 +30,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fylang\Fylang.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\test-programs\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <!-- This line is often not necessary in modern SDK-style projects, 
+            as the folder structure is maintained by default, 
+            but can be explicitly used with the Link attribute if needed 
+            to control the output path precisely. -->
+        <!-- <Link>%(RecursiveDir)%(Filename)%(Extension)</Link> -->
+    </Content>
   </ItemGroup>
 
 </Project>

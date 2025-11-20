@@ -49,7 +49,7 @@ module Lexer =
 
     let lex (sourceCode: string) =
         let rec lexInner (source: string) (location: Location) (acc: list<Token>) = 
-            if location.Idx > source.Length then
+            if location.Idx >= source.Length then
                 let token = { TokenType = TokenType.EOF; Lexeme = "EOF"; Location = location |> advance}
                 (token :: acc)
             else
