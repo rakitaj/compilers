@@ -18,6 +18,6 @@
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
     "files.associations": {
-        "*.tokens": "jsonl"
+        "*.tokens": "json"
     }
 }

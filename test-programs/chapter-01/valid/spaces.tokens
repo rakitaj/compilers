@@ -1,11 +1,13 @@
-{"type":"KEYWORD_INT","lexeme":"int","line":1,"col":3}
-{"type":"IDENTIFIER","lexeme":"main","line":1,"col":9}
-{"type":"OPEN_PAREN","lexeme":"(","line":1,"col":17}
-{"type":"KEYWORD_VOID", "lexeme": "void", "line": 1, "col": 20}
-{"type":"CLOSE_PAREN","lexeme":")","line":1,"col":24}
-{"type":"OPEN_BRACE","lexeme":"{","line":1,"col":27}
-{"type":"KEYWORD_RETURN","lexeme":"return","line":1,"col":31}
-{"type":"INTEGER","lexeme":"0","line":1,"col":39}
-{"type":"SEMICOLON","lexeme":";","line":1,"col":41}
-{"type":"CLOSE_BRACE","lexeme":"}","line":1,"col":43}
-{"type":"EOF","lexeme":"","line":1,"col":44}
+[
+{"token_type":"KW_INT","lexeme":"int","line":1,"col":3},
+{"token_type":"IDENTIFIER","lexeme":"main","line":1,"col":9},
+{"token_type":"OPEN_PAREN","lexeme":"(","line":1,"col":17},
+{"token_type":"KW_VOID", "lexeme": "void", "line": 1, "col": 20},
+{"token_type":"CLOSE_PAREN","lexeme":")","line":1,"col":24},
+{"token_type":"OPEN_BRACE","lexeme":"{","line":1,"col":27},
+{"token_type":"KW_RETURN","lexeme":"return","line":1,"col":31},
+{"token_type":"LITERAL_INTEGER","lexeme":"0","line":1,"col":39},
+{"token_type":"SEMICOLON","lexeme":";","line":1,"col":41},
+{"token_type":"CLOSE_BRACE","lexeme":"}","line":1,"col":43},
+{"token_type":"EOF","lexeme":"","line":1,"col":44}
+]

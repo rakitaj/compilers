@@ -1,18 +1,33 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
+from abc import ABC
+from tokens import Token, TokenType, UNARY_OP_TOKENS
+from cerrors import CSyntaxError
 
-from tokens import Token, TokenType
+
+class Expression(ABC):
+    pass
 
 
 @dataclass
-class Expression:
+class ConstantInt(Expression):
     value: int
 
 
 @dataclass
+class UnaryOp(Expression):
+    operator: TokenType
+    inner_expr: Expression
+
+    def __init__(self, operator: TokenType, operand: Expression):
+        if operator not in UNARY_OP_TOKENS:
+            raise ValueError(f"Invalid token type for unary operation {operator}.")
+        self.operator = operator
+        self.inner_expr = operand
+
+
+@dataclass
 class Statement:
-    value: Expression
+    expr: Expression
 
 
 @dataclass
@@ -31,12 +46,8 @@ class Function:
 
 
 class Program:
-    def __init__(self) -> None:
-        self.functions: list[Function] = []
-
-
-def is_statement_start(tokens: list[Token], idx: int) -> bool:
-    return tokens[idx].token_type == TokenType.KEYWORD_RETURN
+    def __init__(self, functions: list[Function] | None = None) -> None:
+        self.functions: list[Function] = functions or []
 
 
 class Parser:
@@ -67,27 +78,26 @@ class Parser:
         self.idx += 1
         return token
 
-    def expect(self, token_type: TokenType) -> tuple[bool, str]:
-        token = self.get(0)
+    def expect(self, token_type: TokenType) -> Token:
+        token = self.consume()
         if token.token_type == token_type:
-            return (True, "")
+            return token
         else:
-            msg = f"Expected {token_type} at i:{self.idx}. Found: {token}"
-            return (False, msg)
+            raise CSyntaxError(token_type, token)
 
     def parse_program(self) -> Program:
-        program = Program()
-        program.functions.extend(self.parse_functions())
+        functions = self.parse_functions()
+        program = Program(functions)
         return program
 
     def parse_functions(self) -> list[Function]:
         functions: list[Function] = []
         while self.get().token_type != TokenType.EOF:
-            if self.check_sequence(TokenType.KEYWORD_INT, TokenType.IDENTIFIER, TokenType.OPEN_PAREN):
+            if self.check_sequence(TokenType.KW_INT, TokenType.IDENTIFIER, TokenType.OPEN_PAREN):
                 name = self.get(1).lexeme
                 self.idx += 3
                 parameters: list[Parameter] = []
-                if self.check_sequence(TokenType.KEYWORD_VOID):
+                if self.check_sequence(TokenType.KW_VOID):
                     param = Parameter(self.get(), "")
                     parameters.append(param)
                     self.idx += 1
@@ -95,29 +105,32 @@ class Parser:
                 # self.idx += 5
                 statements = self.parse_statements()
                 function = Function(name, statements)
-                if is_valid_function := self.expect(TokenType.CLOSE_BRACE):
-                    self.idx += 1
-                else:
-                    raise ValueError(is_valid_function[1])
+                _ = self.expect(TokenType.CLOSE_BRACE)
                 functions.append(function)
         return functions
 
     def parse_statements(self) -> list[Statement]:
         statements: list[Statement] = []
-        while self.get().token_type == TokenType.KEYWORD_RETURN:
+        while self.get().token_type == TokenType.KW_RETURN:
             self.idx += 1
             statement = Statement(self.parse_expression())
-            if is_valid_statement := self.expect(TokenType.SEMICOLON):
-                statements.append(statement)
-                self.idx += 1
-            else:
-                raise ValueError(is_valid_statement[1])
+            _ = self.expect(TokenType.SEMICOLON)
+            statements.append(statement)
         return statements
 
     def parse_expression(self) -> Expression:
-        number_str = self.get().lexeme
-        self.idx += 1
-        return Expression(int(number_str))
+        token = self.consume()
+        if token.token_type in UNARY_OP_TOKENS:
+            operator = token
+            inner_expr = self.parse_expression()
+            return UnaryOp(operator.token_type, inner_expr)
+        elif token.token_type == TokenType.OPEN_PAREN:
+            inner_expr = self.parse_expression()
+            _ = self.expect(TokenType.CLOSE_PAREN)
+            return inner_expr
+        else:
+            integer = int(token.lexeme)
+            return ConstantInt(integer)
 
 
 def pretty_print(node: Program | Function | Statement | Expression, indent: int = 0) -> None:
@@ -133,9 +146,9 @@ def pretty_print(node: Program | Function | Statement | Expression, indent: int 
             pretty_print(statement, indent + 2)
 
     elif isinstance(node, Statement):
-        print(f"{padding}Statement - {node.value}")
+        print(f"{padding}Statement - {node.expr}")
         # Hack! A statement can only have one expr right now.
-        pretty_print(node.value, indent + 2)
+        pretty_print(node.expr, indent + 2)
 
     else:  # Always an expression by this point
-        print(f"{padding}Expr value - {node.value}")
+        print(f"{padding}Expr value - {node}")

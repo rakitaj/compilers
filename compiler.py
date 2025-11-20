@@ -1,4 +1,5 @@
-from parser import Expression, Function, Program, Statement
+from parser import Expression, Function, Program, Statement, UnaryOp, ConstantInt
+from tokens import TokenType
 
 
 def post_order(node: Program | Function | Statement | Expression, depth: int) -> list[str]:
@@ -18,13 +19,32 @@ def post_order(node: Program | Function | Statement | Expression, depth: int) ->
         return assembly
 
     elif isinstance(node, Statement):
-        expr_asm = post_order(node.value, depth + 1)
+        expr_asm = post_order(node.expr, depth + 1)
         expr_asm.append("ret")
         return expr_asm
         # Hack! A statement can only have one expr right now.
 
-    else:  # Always an expression by this point
+    # Into expressions
+    elif isinstance(node, UnaryOp):
+        asm = post_order(node.inner_expr, depth + 1)
+        match node.operator:
+            case TokenType.NEGATION:
+                asm.append("neg %eax")
+                return asm
+            case TokenType.BITWISE_COMPLEMENT:
+                asm.append("not %eax")
+                return asm
+            case TokenType.LOGICAL_NEGATION:
+                asm.append("cmpl %0, %eax")
+                asm.append("movl $0, %eax")
+                asm.append("sete %al")
+            case _:
+                raise ValueError(f"Unknown node[{node}]")
+
+    elif isinstance(node, ConstantInt):
         return [f"movl ${node.value}, %eax"]
+    else:
+        raise ValueError(f"Unknown node[{node}]")
 
 
 def generate_assembly(program: Program) -> list[str]:

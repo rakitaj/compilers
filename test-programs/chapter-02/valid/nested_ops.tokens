@@ -1,0 +1,80 @@
+[
+    {
+        "lexeme": "int",
+        "line": 1,
+        "column": 0,
+        "token_type": "KW_INT"
+    },
+    {
+        "lexeme": "main",
+        "line": 1,
+        "column": 4,
+        "token_type": "IDENTIFIER"
+    },
+    {
+        "lexeme": "(",
+        "line": 1,
+        "column": 8,
+        "token_type": "OPEN_PAREN"
+    },
+    {
+        "lexeme": "void",
+        "line": 1,
+        "column": 9,
+        "token_type": "KW_VOID"
+    },
+    {
+        "lexeme": ")",
+        "line": 1,
+        "column": 13,
+        "token_type": "CLOSE_PAREN"
+    },
+    {
+        "lexeme": "{",
+        "line": 1,
+        "column": 15,
+        "token_type": "OPEN_BRACE"
+    },
+    {
+        "lexeme": "return",
+        "line": 2,
+        "column": 4,
+        "token_type": "KW_RETURN"
+    },
+    {
+        "lexeme": "~",
+        "line": 2,
+        "column": 11,
+        "token_type": "BITWISE_COMPLEMENT"
+    },
+    {
+        "lexeme": "-",
+        "line": 2,
+        "column": 12,
+        "token_type": "NEGATION"
+    },
+    {
+        "lexeme": "3",
+        "line": 2,
+        "column": 13,
+        "token_type": "LITERAL_INTEGER"
+    },
+    {
+        "lexeme": ";",
+        "line": 2,
+        "column": 14,
+        "token_type": "SEMICOLON"
+    },
+    {
+        "lexeme": "}",
+        "line": 3,
+        "column": 0,
+        "token_type": "CLOSE_BRACE"
+    },
+    {
+        "lexeme": "",
+        "line": 3,
+        "column": 1,
+        "token_type": "EOF"
+    }
+]

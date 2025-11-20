@@ -6,8 +6,9 @@
 {"token_type":"CLOSE_PAREN","lexeme":")","line":1,"col":13},
 {"token_type":"OPEN_BRACE","lexeme":"{","line":1,"col":15},
 {"token_type":"KW_RETURN","lexeme":"return","line":2,"col":4},
-{"token_type":"LITERAL_INTEGER","lexeme":"0","line":2,"col":11},
-{"token_type":"SEMICOLON","lexeme":";","line":2,"col":12},
+{"token_type":"NEGATION","lexeme":"-","line":2,"col":11},
+{"token_type":"LITERAL_INTEGER","lexeme":"5","line":2,"col":12},
+{"token_type":"SEMICOLON","lexeme":";","line":2,"col":13},
 {"token_type":"CLOSE_BRACE","lexeme":"}","line":3,"col":0},
 {"token_type":"EOF","lexeme":"","line":3,"col":1}
 ]
